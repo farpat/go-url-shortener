@@ -19,7 +19,7 @@ test: ## Run tests
 
 run: ## Run the application
 	@echo "Server started on $(BOLD)https://localhost:$(PORT)$(RESET)"
-	@PORT=$(PORT) go run ./public
+	@PORT=$(PORT) air -log.silent=true
 
 update-certificates: ## Generate SSL certificates
 	@mkcert -key-file certs/key.pem -cert-file certs/cert.pem localhost 127.0.0.1

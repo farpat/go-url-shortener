@@ -1,0 +1,10 @@
+[build]
+cmd = "go build -o tmp/main ./public" 
+bin = "tmp/main"
+include_ext = ["go", "tpl", "html"]
+exclude_dir = ["tests", "tmp", "certs"]
+watching = "on"
+
+[log]
+color = "on"
+log_level = "warn"
