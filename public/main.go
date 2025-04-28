@@ -13,11 +13,5 @@ func main() {
 		w.Write([]byte("Hello World"))
 	}).Methods("GET")
 
-	port := config.App["port"]
-	if port == "" {
-		port = "8080"
-	}
-
-	// Start the server
-	http.ListenAndServeTLS(":"+port, "certs/cert.pem", "certs/key.pem", router)
+	http.ListenAndServeTLS(":"+config.App["port"], "certs/cert.pem", "certs/key.pem", router)
 }
