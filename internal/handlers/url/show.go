@@ -9,6 +9,10 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type ShowResponse struct {
+	Data models.UrlShowItem `json:"data"`
+}
+
 func Show(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -24,9 +28,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(struct {
-		Data models.UrlShowItem `json:"data"`
-	}{
+	json.NewEncoder(w).Encode(ShowResponse{
 		Data: url,
 	})
 }
