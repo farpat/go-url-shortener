@@ -1,5 +1,6 @@
 # Go URL Shortener
 A simple URL shortener written in Go.
+[![Test](https://github.com/farpat/go-url-shortener/workflows/Test/badge.svg)](https://github.com/farpat/go-url-shortener/actions)
 
 ## List all short URLs
 ```sh
