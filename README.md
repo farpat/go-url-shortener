@@ -40,3 +40,4 @@ make install
 make update-certificates
 make run
 ```
+and watch the instructions
