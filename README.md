@@ -30,11 +30,13 @@ DELETE /api/urls/{slug}
 ```sh
 git clone https://github.com/farpat/go-url-shortener.git
 cd go-url-shortener
+cp .env.example .env
 make install
 ```
 
 ## Usage
 
 ```sh
+make update-certificates
 make run
 ```
