@@ -9,9 +9,7 @@ import (
 )
 
 func All() ([]models.UrlListItem, error) {
-	dbPath := config.Databases["main"]
-
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := openDB()
 	if err != nil {
 		return nil, err
 	}
@@ -36,9 +34,7 @@ func All() ([]models.UrlListItem, error) {
 }
 
 func Find(slug string) (models.UrlShowItem, error) {
-	dbPath := config.Databases["main"]
-
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := openDB()
 	if err != nil {
 		return models.UrlShowItem{}, err
 	}
@@ -51,4 +47,14 @@ func Find(slug string) (models.UrlShowItem, error) {
 	}
 
 	return url, nil
+}
+
+func openDB() (*sql.DB, error) {
+	dbPath := config.Databases["main"]
+
+	db, err := sql.Open("sqlite3", dbPath)
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
 }
