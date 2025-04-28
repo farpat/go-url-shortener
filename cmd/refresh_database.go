@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"os"
-	"time"
 
 	"github.com/farpat/go-url-shortener/internal/config"
 	"github.com/farpat/go-url-shortener/internal/models"
@@ -15,7 +14,7 @@ import (
 func main() {
 	dbPath := config.Databases["main"]
 
-	color.Cyan("🟥 Deleting database if exists... ")
+	color.Cyan("🟥  Deleting database if exists... ")
 	if err := deleteDatabaseIfExists(dbPath); err != nil {
 		panic(err)
 	}
@@ -35,7 +34,7 @@ func main() {
 		return
 	}
 
-	color.Cyan("🌱 Seeding database...")
+	color.Cyan("🌱  Seeding database...")
 
 	for _, url := range []string{
 		"https://golang.org",
@@ -44,10 +43,9 @@ func main() {
 	} {
 		slug := services.GenerateSlug(url)
 
-		url := models.Url{
-			Slug:      slug,
-			Url:       url,
-			CreatedAt: time.Now(),
+		url := models.UrlShowItem{
+			Slug: slug,
+			Url:  url,
 		}
 
 		if err := storeUrl(db, url); err != nil {
@@ -62,8 +60,8 @@ func shouldSeedDatabase() bool {
 	return os.Getenv("SEED") == "true" || os.Getenv("SEED") == "1"
 }
 
-func storeUrl(db *sql.DB, url models.Url) error {
-	_, err := db.Exec("INSERT INTO urls (slug, url, created_at) VALUES (?, ?, ?)", url.Slug, url.Url, url.CreatedAt)
+func storeUrl(db *sql.DB, url models.UrlShowItem) error {
+	_, err := db.Exec("INSERT INTO urls (slug, url) VALUES (?, ?)", url.Slug, url.Url)
 	return err
 }
 
