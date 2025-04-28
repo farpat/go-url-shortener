@@ -2,7 +2,7 @@
 
 .PHONY: help test run update-certificates install
 
-include .env
+-include .env
 
 # ANSI color codes
 BOLD := \033[1m
