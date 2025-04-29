@@ -19,6 +19,7 @@ This is the structure of the project:
 │   └── feature       => Tests of endpoints or commands
 ├── .air.toml         => Auto-reload configuration
 └── Makefile          => Developer commands
+```
 
 # API
 ## List all short URLs
