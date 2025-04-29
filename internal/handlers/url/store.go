@@ -38,28 +38,13 @@ func Store(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	validate := validator.New()
-
-	validate.RegisterValidation("unique_slug", func(fl validator.FieldLevel) bool {
-		_, err := urlRepository.Find(fl.Field().String())
-		var notFoundError *urlRepository.NotFoundError
-
-		// error is "NotFoundError" => slug does not exist => good
-		return errors.As(err, &notFoundError)
-	})
-
 	slug := services.GenerateSlug(urlRequest.Url)
 	urlRequest.Slug = slug
-	if err := validate.Struct(urlRequest); err != nil {
+	if err := makeValidator().Struct(urlRequest); err != nil {
 		response.WriteHeader(http.StatusUnprocessableEntity)
-
-		var messages = map[string]string{}
-		for _, e := range err.(validator.ValidationErrors) {
-			messages[e.Field()] = e.Tag()
-		}
 		json.NewEncoder(response).Encode(StoreErrorResponse{
 			Error:    "Invalid data",
-			Messages: messages,
+			Messages: formatValidationErrors(err.(validator.ValidationErrors)),
 		})
 		return
 	}
@@ -83,4 +68,26 @@ func Store(response http.ResponseWriter, request *http.Request) {
 	json.NewEncoder(response).Encode(StoreResponse{
 		Data: url,
 	})
+}
+
+func makeValidator() *validator.Validate {
+	validate := validator.New()
+
+	validate.RegisterValidation("unique_slug", func(fl validator.FieldLevel) bool {
+		_, err := urlRepository.Find(fl.Field().String())
+		var notFoundError *urlRepository.NotFoundError
+
+		// error is "NotFoundError" => slug does not exist => good
+		return errors.As(err, &notFoundError)
+	})
+
+	return validate
+}
+
+func formatValidationErrors(validationErrors validator.ValidationErrors) map[string]string {
+	var messages = map[string]string{}
+	for _, e := range validationErrors {
+		messages[e.Field()] = e.Tag()
+	}
+	return messages
 }
