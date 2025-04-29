@@ -12,15 +12,15 @@ type IndexResponse struct {
 	Data []models.UrlListItem `json:"data"`
 }
 
-func Index(w http.ResponseWriter, r *http.Request) {
+func Index(response http.ResponseWriter, request *http.Request) {
 	urls, err := urlRepository.All()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(response, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(IndexResponse{
+	response.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(response).Encode(IndexResponse{
 		Data: urls,
 	})
 }
