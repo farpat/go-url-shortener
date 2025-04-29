@@ -1,9 +1,7 @@
 package config
 
-import (
-	"github.com/farpat/go-url-shortener/internal/services"
-)
+import "github.com/farpat/go-url-shortener/internal/utils"
 
 var App = map[string]string{
-	"port": services.Env("PORT", "8080"),
+	"port": utils.Env("PORT", "8080"),
 }
