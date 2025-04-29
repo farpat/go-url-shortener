@@ -11,6 +11,7 @@ This is the structure of the project:
 │   ├── models        => Database models
 │   ├── repositories  => Database repositories
 │   ├── services      => Business logic
+│   ├── validation    => Contains custom validation rules
 │   └── utils         => Utility functions
 ├── public
 │   └── main.go       => Main application
