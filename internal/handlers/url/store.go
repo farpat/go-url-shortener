@@ -7,14 +7,10 @@ import (
 
 	"github.com/farpat/go-url-shortener/internal/models"
 	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
+	"github.com/farpat/go-url-shortener/internal/requests"
 	"github.com/farpat/go-url-shortener/internal/services"
 	"github.com/go-playground/validator/v10"
 )
-
-type UrlRequest struct {
-	Url  string `json:"url" validate:"required,url,startswith=https://"`
-	Slug string `json:"slug" validate:"required,unique_slug"`
-}
 
 type StoreResponse struct {
 	Data models.UrlShowItem `json:"data"`
@@ -28,7 +24,7 @@ type StoreErrorResponse struct {
 func Store(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "application/json")
 
-	var urlRequest UrlRequest
+	var urlRequest requests.StoreUrlRequest
 	if err := json.NewDecoder(request.Body).Decode(&urlRequest); err != nil {
 		response.WriteHeader(http.StatusUnprocessableEntity)
 		json.NewEncoder(response).Encode(StoreErrorResponse{
