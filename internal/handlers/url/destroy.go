@@ -1,0 +1,34 @@
+package handlers
+
+import (
+	"encoding/json"
+	"errors"
+	"net/http"
+
+	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
+	"github.com/gorilla/mux"
+)
+
+func Destroy(response http.ResponseWriter, request *http.Request) {
+	response.Header().Set("Content-Type", "application/json")
+
+	slug := mux.Vars(request)["slug"]
+	err := urlRepository.Delete(slug)
+	if err != nil {
+		var errorJSON map[string]string
+		var notFoundError *urlRepository.NotFoundError
+
+		if errors.As(err, &notFoundError) {
+			response.WriteHeader(http.StatusNotFound)
+			errorJSON = map[string]string{"error": notFoundError.Error()}
+		} else {
+			response.WriteHeader(http.StatusInternalServerError)
+			errorJSON = map[string]string{"error": "Internal Server Error"}
+		}
+
+		json.NewEncoder(response).Encode(errorJSON)
+		return
+	}
+
+	response.WriteHeader(http.StatusNoContent)
+}
