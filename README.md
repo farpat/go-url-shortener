@@ -23,6 +23,9 @@ This is the structure of the project:
 ```
 
 # API
+> [!NOTE]  
+> Note that [Urls.postman_collection.json](Urls.postman_collection.json) contains all exported endpoints from Postman.
+
 ## List all short URLs
 ```sh
 GET /api/urls
@@ -47,7 +50,6 @@ DELETE /api/urls/{slug}
 ```
 
 # Installation
-
 ```sh
 git clone https://github.com/farpat/go-url-shortener.git
 cd go-url-shortener
@@ -56,7 +58,6 @@ make install
 ```
 
 # Usage
-
 ```sh
 make update-certificates
 make run

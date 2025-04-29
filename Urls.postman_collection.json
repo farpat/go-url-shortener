@@ -1,0 +1,98 @@
+{
+	"info": {
+		"_postman_id": "e91bdb97-5bf2-4e25-b2a3-5f232aa0e04e",
+		"name": "Urls",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11353314",
+		"_collection_link": "https://gold-zodiac-374898.postman.co/workspace/Tech-watch~4a5d5d65-9490-4314-9a60-5f09d55cfc27/collection/11353314-e91bdb97-5bf2-4e25-b2a3-5f232aa0e04e?action=share&source=collection_link&creator=11353314"
+	},
+	"item": [
+		{
+			"name": "List urls",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{domain}}/api/urls",
+					"protocol": "https",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"api",
+						"urls"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Store url",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"url\": \"https://google.fr/dfssdfsdfdsf\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{domain}}/api/urls",
+					"protocol": "https",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"api",
+						"urls"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Show url",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{domain}}/api/urls/{{url_slug}}",
+					"protocol": "https",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"api",
+						"urls",
+						"{{url_slug}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete url",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://{{domain}}/api/urls/{{url_slug}}",
+					"protocol": "https",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"api",
+						"urls",
+						"{{url_slug}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
