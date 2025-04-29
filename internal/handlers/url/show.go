@@ -2,10 +2,12 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/farpat/go-url-shortener/internal/models"
 	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
+	"github.com/gorilla/mux"
 )
 
 type ShowResponse struct {
@@ -15,14 +17,22 @@ type ShowResponse struct {
 func Show(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "application/json")
 
-	slug := request.Context().Value("slug").(string)
+	vars := mux.Vars(request)
+	slug := vars["slug"]
 	url, err := urlRepository.Find(slug)
 	if err != nil {
-		errorJSON := map[string]string{
-			"error": "URL linked to '" + slug + "' not found",
+		var jsonError map[string]string
+		var notFoundError *urlRepository.NotFoundError
+
+		if errors.As(err, &notFoundError) {
+			response.WriteHeader(http.StatusNotFound)
+			jsonError = map[string]string{"error": notFoundError.Error()}
+		} else {
+			response.WriteHeader(http.StatusInternalServerError)
+			jsonError = map[string]string{"error": "Internal Server Error"}
 		}
-		response.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(response).Encode(errorJSON)
+
+		json.NewEncoder(response).Encode(jsonError)
 		return
 	}
 
