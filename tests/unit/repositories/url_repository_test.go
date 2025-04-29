@@ -136,8 +136,46 @@ func TestDeleteNotFound(t *testing.T) {
 	assert.Equal(t, 1, getUrlsCount(db))
 }
 
+func TestCreateWithoutSlug(t *testing.T) {
+	// ARRANGE
+	teardown, db := setupTestDB()
+	defer teardown()
+
+	// ACT
+	url := models.UrlShowItem{Url: "https://example.com"}
+	err := urlRepository.Create(url)
+
+	// ASSERT
+	expectedSlug := "b1d785a29f52a5e94b3c009bc11b9cfa"
+	assert.NoError(t, err)
+	assert.Equal(t, 1, getUrlsCount(db))
+	assert.Equal(t, expectedSlug, getUrlBySlug(db, expectedSlug).Slug)
+}
+
+func TestCreateWithSlug(t *testing.T) {
+	// ARRANGE
+	teardown, db := setupTestDB()
+	defer teardown()
+
+	// ACT
+	url := models.UrlShowItem{Slug: "abc", Url: "https://example.com"}
+	err := urlRepository.Create(url)
+
+	// ASSERT
+	expectedSlug := "abc"
+	assert.NoError(t, err)
+	assert.Equal(t, 1, getUrlsCount(db))
+	assert.Equal(t, expectedSlug, getUrlBySlug(db, expectedSlug).Slug)
+}
+
 func getUrlsCount(db *sql.DB) int {
 	var count int
 	db.QueryRow("SELECT COUNT(*) FROM urls").Scan(&count)
 	return count
+}
+
+func getUrlBySlug(db *sql.DB, slug string) models.UrlShowItem {
+	var url models.UrlShowItem
+	db.QueryRow("SELECT slug, url, created_at FROM urls WHERE slug = ?", slug).Scan(&url.Slug, &url.Url, &url.CreatedAt)
+	return url
 }

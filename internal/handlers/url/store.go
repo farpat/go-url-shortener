@@ -1,0 +1,86 @@
+package handlers
+
+import (
+	"encoding/json"
+	"errors"
+	"net/http"
+
+	"github.com/farpat/go-url-shortener/internal/models"
+	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
+	"github.com/farpat/go-url-shortener/internal/services"
+	"github.com/go-playground/validator/v10"
+)
+
+type UrlRequest struct {
+	Url  string `json:"url" validate:"required,url,startswith=https://"`
+	Slug string `json:"slug" validate:"required,unique_slug"`
+}
+
+type StoreResponse struct {
+	Data models.UrlShowItem `json:"data"`
+}
+
+type StoreErrorResponse struct {
+	Error    string            `json:"error"`
+	Messages map[string]string `json:"messages"`
+}
+
+func Store(response http.ResponseWriter, request *http.Request) {
+	response.Header().Set("Content-Type", "application/json")
+
+	var urlRequest UrlRequest
+	if err := json.NewDecoder(request.Body).Decode(&urlRequest); err != nil {
+		response.WriteHeader(http.StatusUnprocessableEntity)
+		json.NewEncoder(response).Encode(StoreErrorResponse{
+			Error:    "Malformed JSON",
+			Messages: map[string]string{},
+		})
+		return
+	}
+
+	validate := validator.New()
+
+	validate.RegisterValidation("unique_slug", func(fl validator.FieldLevel) bool {
+		_, err := urlRepository.Find(fl.Field().String())
+		var notFoundError *urlRepository.NotFoundError
+
+		// error is "NotFoundError" => slug does not exist => good
+		return errors.As(err, &notFoundError)
+	})
+
+	slug := services.GenerateSlug(urlRequest.Url)
+	urlRequest.Slug = slug
+	if err := validate.Struct(urlRequest); err != nil {
+		response.WriteHeader(http.StatusUnprocessableEntity)
+
+		var messages = map[string]string{}
+		for _, e := range err.(validator.ValidationErrors) {
+			messages[e.Field()] = e.Tag()
+		}
+		json.NewEncoder(response).Encode(StoreErrorResponse{
+			Error:    "Invalid data",
+			Messages: messages,
+		})
+		return
+	}
+
+	err := urlRepository.Create(models.UrlShowItem{
+		Url:  urlRequest.Url,
+		Slug: urlRequest.Slug,
+	})
+
+	if err != nil {
+		response.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(response).Encode(StoreErrorResponse{
+			Error:    "Internal Server Error",
+			Messages: map[string]string{},
+		})
+		return
+	}
+
+	url, _ := urlRepository.Find(urlRequest.Slug)
+
+	json.NewEncoder(response).Encode(StoreResponse{
+		Data: url,
+	})
+}

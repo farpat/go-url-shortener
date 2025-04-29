@@ -14,6 +14,7 @@ func main() {
 	router.HandleFunc("/api/urls", urlHandler.Index).Methods("GET")
 	router.HandleFunc("/api/urls/{slug:[a-z0-9]+}", urlHandler.Show).Methods("GET")
 	router.HandleFunc("/api/urls/{slug:[a-z0-9]+}", urlHandler.Destroy).Methods("DELETE")
+	router.HandleFunc("/api/urls", urlHandler.Store).Methods("POST")
 
 	http.ListenAndServeTLS(
 		":"+config.App["port"],

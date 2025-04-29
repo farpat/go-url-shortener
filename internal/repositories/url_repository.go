@@ -5,6 +5,7 @@ import (
 
 	"github.com/farpat/go-url-shortener/internal/config"
 	"github.com/farpat/go-url-shortener/internal/models"
+	"github.com/farpat/go-url-shortener/internal/services"
 	"github.com/farpat/go-url-shortener/internal/utils"
 	_ "github.com/mattn/go-sqlite3" // pour le driver SQLite
 )
@@ -73,6 +74,25 @@ func Delete(slug string) error {
 	rowsAffectedCount, _ := result.RowsAffected()
 	if rowsAffectedCount == 0 {
 		return &NotFoundError{Slug: slug}
+	}
+
+	return nil
+}
+
+func Create(url models.UrlShowItem) error {
+	db, err := openDB()
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	if url.Slug == "" {
+		url.Slug = services.GenerateSlug(url.Url)
+	}
+
+	_, err = db.Exec("INSERT INTO urls (slug, url, created_at) VALUES (?, ?, ?)", url.Slug, url.Url, url.CreatedAt)
+	if err != nil {
+		return err
 	}
 
 	return nil
