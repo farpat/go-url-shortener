@@ -2,14 +2,14 @@ package handlers
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"github.com/farpat/go-url-shortener/internal/models"
 	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
 	"github.com/farpat/go-url-shortener/internal/requests"
 	"github.com/farpat/go-url-shortener/internal/services"
-	"github.com/go-playground/validator/v10"
+	"github.com/farpat/go-url-shortener/internal/validation"
+	"github.com/go-playground/validator"
 )
 
 type StoreResponse struct {
@@ -36,11 +36,11 @@ func Store(response http.ResponseWriter, request *http.Request) {
 
 	slug := services.GenerateSlug(urlRequest.Url)
 	urlRequest.Slug = slug
-	if err := makeValidator().Struct(urlRequest); err != nil {
+	if err := validation.GetValidator().Struct(urlRequest); err != nil {
 		response.WriteHeader(http.StatusUnprocessableEntity)
 		json.NewEncoder(response).Encode(StoreErrorResponse{
 			Error:    "Invalid data",
-			Messages: formatValidationErrors(err.(validator.ValidationErrors)),
+			Messages: validation.FormatErrors(err.(validator.ValidationErrors)),
 		})
 		return
 	}
@@ -64,26 +64,4 @@ func Store(response http.ResponseWriter, request *http.Request) {
 	json.NewEncoder(response).Encode(StoreResponse{
 		Data: url,
 	})
-}
-
-func makeValidator() *validator.Validate {
-	validate := validator.New()
-
-	validate.RegisterValidation("unique_slug", func(fl validator.FieldLevel) bool {
-		_, err := urlRepository.Find(fl.Field().String())
-		var notFoundError *urlRepository.NotFoundError
-
-		// error is "NotFoundError" => slug does not exist => good
-		return errors.As(err, &notFoundError)
-	})
-
-	return validate
-}
-
-func formatValidationErrors(validationErrors validator.ValidationErrors) map[string]string {
-	var messages = map[string]string{}
-	for _, e := range validationErrors {
-		messages[e.Field()] = e.Tag()
-	}
-	return messages
 }
