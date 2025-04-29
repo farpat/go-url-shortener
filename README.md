@@ -42,9 +42,8 @@ make run
 ```
 and watch the instructions
 
-If you want to debug the application with VSCode, you can use the following configuration:
+If you want to debug the application with VSCode, you can use the following configuration `.vscode/launch.json`:
 ```json
-// .vscode/launch.json
 {
   "version": "0.2.0",
   "configurations": [
