@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/farpat/go-url-shortener/internal/config"
 	"github.com/farpat/go-url-shortener/internal/models"
@@ -88,6 +89,10 @@ func Create(url models.UrlShowItem) error {
 
 	if url.Slug == "" {
 		url.Slug = services.GenerateSlug(url.Url)
+	}
+
+	if url.CreatedAt.IsZero() {
+		url.CreatedAt = time.Now()
 	}
 
 	_, err = db.Exec("INSERT INTO urls (slug, url, created_at) VALUES (?, ?, ?)", url.Slug, url.Url, url.CreatedAt)
