@@ -14,20 +14,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@master
         with:
-          go-version: '1.21'
+          go-version: '1.24'
           
-      - name: Go Cache
-        uses: actions/cache@master
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-            
-      - name: Download dependencies
-        run: go mod download
-        
       - name: Run tests
         run: make test
