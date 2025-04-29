@@ -18,7 +18,11 @@ func (e *NotFoundError) Error() string {
 }
 
 func All() ([]models.UrlListItem, error) {
-	db := openDB()
+	db, err := openDB()
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
 
 	urls := []models.UrlListItem{}
 	rows, err := db.Query("SELECT slug, url FROM urls ORDER BY created_at DESC")
@@ -39,10 +43,14 @@ func All() ([]models.UrlListItem, error) {
 }
 
 func Find(slug string) (models.UrlShowItem, error) {
-	db := openDB()
+	db, err := openDB()
+	if err != nil {
+		return models.UrlShowItem{}, err
+	}
+	defer db.Close()
 
 	var url models.UrlShowItem
-	err := db.QueryRow("SELECT slug, url, created_at FROM urls WHERE slug = ?", slug).Scan(&url.Slug, &url.Url, &url.CreatedAt)
+	err = db.QueryRow("SELECT slug, url, created_at FROM urls WHERE slug = ?", slug).Scan(&url.Slug, &url.Url, &url.CreatedAt)
 	if err != nil {
 		return models.UrlShowItem{}, &NotFoundError{Slug: slug}
 	}
@@ -51,7 +59,11 @@ func Find(slug string) (models.UrlShowItem, error) {
 }
 
 func Delete(slug string) error {
-	db := openDB()
+	db, err := openDB()
+	if err != nil {
+		return err
+	}
+	defer db.Close()
 
 	result, err := db.Exec("DELETE FROM urls WHERE slug = ?", slug)
 	if err != nil {
@@ -66,13 +78,12 @@ func Delete(slug string) error {
 	return nil
 }
 
-func openDB() *sql.DB {
+func openDB() (*sql.DB, error) {
 	dbPath := config.Databases["main"]
 
 	db, err := sql.Open("sqlite3", utils.ProjectPath(dbPath))
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-
-	return db
+	return db, nil
 }
