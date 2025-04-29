@@ -9,7 +9,7 @@ import (
 	"github.com/farpat/go-url-shortener/internal/requests"
 	"github.com/farpat/go-url-shortener/internal/services"
 	"github.com/farpat/go-url-shortener/internal/validation"
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 )
 
 type StoreResponse struct {
