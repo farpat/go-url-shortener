@@ -1,6 +1,16 @@
 This project is a simple URL shortener written in Go.
 [![Test](https://github.com/farpat/go-url-shortener/workflows/Test/badge.svg)](https://github.com/farpat/go-url-shortener/actions)
 
+
+Table of content
+* [API](#api)
+  * [List all short URLs](#list-all-short-urls)
+  * [Get a short URL by slug](#get-a-short-url-by-slug)
+  * [Create a new short URL](#create-a-new-short-url)
+  * [Delete a short URL](#delete-a-short-url)
+* [Installation](#installation)
+* [Usage](#usage)
+
 # API
 ## List all short URLs
 ```sh
@@ -25,7 +35,7 @@ POST /api/urls
 DELETE /api/urls/{slug}
 ```
 
-## Installation
+# Installation
 
 ```sh
 git clone https://github.com/farpat/go-url-shortener.git
@@ -34,13 +44,13 @@ cp .env.example .env
 make install
 ```
 
-## Usage
+# Usage
 
 ```sh
 make update-certificates
 make run
 ```
-and watch the instructions
+and watch the instructions.
 
 If you want to debug the application with VSCode, you can use the following configuration `.vscode/launch.json`:
 ```json
