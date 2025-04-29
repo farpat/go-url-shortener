@@ -13,13 +13,17 @@ type IndexResponse struct {
 }
 
 func Index(response http.ResponseWriter, request *http.Request) {
+	response.Header().Set("Content-Type", "application/json")
+
 	urls, err := urlRepository.All()
 	if err != nil {
-		http.Error(response, err.Error(), http.StatusInternalServerError)
+		response.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(response).Encode(map[string]string{
+			"error": "Internal Server Error",
+		})
 		return
 	}
 
-	response.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(response).Encode(IndexResponse{
 		Data: urls,
 	})
