@@ -1,16 +1,6 @@
 This project is a simple URL shortener written in Go.
 [![Test](https://github.com/farpat/go-url-shortener/workflows/Test/badge.svg)](https://github.com/farpat/go-url-shortener/actions)
 
-
-Table of content
-* [API](#api)
-  * [List all short URLs](#list-all-short-urls)
-  * [Get a short URL by slug](#get-a-short-url-by-slug)
-  * [Create a new short URL](#create-a-new-short-url)
-  * [Delete a short URL](#delete-a-short-url)
-* [Installation](#installation)
-* [Usage](#usage)
-
 # API
 ## List all short URLs
 ```sh
