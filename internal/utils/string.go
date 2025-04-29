@@ -3,17 +3,10 @@ package utils
 import "strings"
 
 func NormalizeString(stringToNormalize string) string {
-	stringToHandle := strings.ToLower(stringToNormalize)
-	stringToHandle = strings.TrimSpace(stringToHandle)
-	if strings.HasPrefix(stringToHandle, "https://") {
-		stringToHandle = strings.Replace(stringToHandle, "https://", "", 1)
-	}
-	if strings.HasPrefix(stringToHandle, "http://") {
-		stringToHandle = strings.Replace(stringToHandle, "http://", "", 1)
-	}
-	if strings.HasPrefix(stringToHandle, "www.") {
-		stringToHandle = strings.Replace(stringToHandle, "www.", "", 1)
-	}
+	stringToHandle := strings.ToLower(strings.TrimSpace(stringToNormalize))
+	stringToHandle = strings.TrimPrefix(stringToHandle, "https://")
+	stringToHandle = strings.TrimPrefix(stringToHandle, "http://")
+	stringToHandle = strings.TrimPrefix(stringToHandle, "www.")
 
 	normalizedString := ""
 
