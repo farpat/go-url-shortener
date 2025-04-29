@@ -5,8 +5,17 @@ import (
 
 	"github.com/farpat/go-url-shortener/internal/config"
 	"github.com/farpat/go-url-shortener/internal/models"
+	"github.com/farpat/go-url-shortener/internal/utils"
 	_ "github.com/mattn/go-sqlite3" // pour le driver SQLite
 )
+
+type NotFoundError struct {
+	Slug string
+}
+
+func (e *NotFoundError) Error() string {
+	return "URL linked to '" + e.Slug + "' not found"
+}
 
 func All() ([]models.UrlListItem, error) {
 	db, err := openDB()
@@ -15,7 +24,7 @@ func All() ([]models.UrlListItem, error) {
 	}
 	defer db.Close()
 
-	var urls []models.UrlListItem
+	urls := []models.UrlListItem{}
 	rows, err := db.Query("SELECT slug, url FROM urls ORDER BY created_at DESC")
 	if err != nil {
 		return nil, err
@@ -43,16 +52,36 @@ func Find(slug string) (models.UrlShowItem, error) {
 	var url models.UrlShowItem
 	err = db.QueryRow("SELECT slug, url, created_at FROM urls WHERE slug = ?", slug).Scan(&url.Slug, &url.Url, &url.CreatedAt)
 	if err != nil {
-		return models.UrlShowItem{}, err
+		return models.UrlShowItem{}, &NotFoundError{Slug: slug}
 	}
 
 	return url, nil
 }
 
+func Delete(slug string) error {
+	db, err := openDB()
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	result, err := db.Exec("DELETE FROM urls WHERE slug = ?", slug)
+	if err != nil {
+		return err
+	}
+
+	rowsAffectedCount, _ := result.RowsAffected()
+	if rowsAffectedCount == 0 {
+		return &NotFoundError{Slug: slug}
+	}
+
+	return nil
+}
+
 func openDB() (*sql.DB, error) {
 	dbPath := config.Databases["main"]
 
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := sql.Open("sqlite3", utils.ProjectPath(dbPath))
 	if err != nil {
 		return nil, err
 	}
