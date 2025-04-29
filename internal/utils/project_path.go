@@ -2,15 +2,18 @@ package utils
 
 import (
 	"os"
-	"path/filepath"
 	"strings"
 )
 
+const projectName = "go-url-shortener"
+
 func ProjectPath(relativePath string) string {
 	currentPath, _ := os.Getwd()
-	if strings.HasSuffix(currentPath, "/public") {
-		currentPath = filepath.Dir(currentPath)
+	suffixPosition := strings.LastIndex(currentPath, projectName)
+	if suffixPosition == -1 {
+		panic("Current directory is not part of the project")
 	}
+	prefix := strings.Trim(currentPath[:suffixPosition], "/")
 
-	return currentPath + "/" + relativePath
+	return "/" + prefix + "/" + projectName + "/" + relativePath
 }
