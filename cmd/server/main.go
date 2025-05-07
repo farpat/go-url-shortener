@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/farpat/go-url-shortener/internal/config"
@@ -16,10 +17,13 @@ func main() {
 	router.HandleFunc("/api/urls/{slug:[a-z0-9]+}", urlHandler.Destroy).Methods("DELETE")
 	router.HandleFunc("/api/urls", urlHandler.Store).Methods("POST")
 
-	http.ListenAndServeTLS(
-		":"+config.App["port"],
+	server := &http.Server{
+		Addr:    ":" + config.App["port"],
+		Handler: router,
+	}
+
+	log.Fatal(server.ListenAndServeTLS(
 		utils.ProjectPath("certs/cert.pem"),
 		utils.ProjectPath("certs/key.pem"),
-		router,
-	)
+	))
 }

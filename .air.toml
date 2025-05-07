@@ -1,5 +1,5 @@
 [build]
-cmd = "go build -o tmp/main ./public" 
+cmd = "go build -o tmp/main ./cmd/server" 
 bin = "tmp/main"
 include_ext = ["go", "tpl", "html"]
 exclude_dir = ["tests", "tmp", "certs"]
