@@ -9,7 +9,7 @@ import (
 
 func GenerateSlug(url string) string {
 	hasher := md5.New()
-	normalizedUrl := utils.NormalizeString(url)
+	normalizedUrl, _ := utils.NormalizeString(url)
 	normalizedUrlAsBytes := []byte(normalizedUrl)
 	hasher.Write(normalizedUrlAsBytes)
 	return hex.EncodeToString(hasher.Sum(nil))
