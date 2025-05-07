@@ -1,12 +1,21 @@
 package utils
 
-import "strings"
+import (
+	"errors"
+	"regexp"
+	"strings"
+)
 
-func NormalizeString(stringToNormalize string) string {
-	stringToHandle := strings.ToLower(strings.TrimSpace(stringToNormalize))
-	stringToHandle = strings.TrimPrefix(stringToHandle, "https://")
-	stringToHandle = strings.TrimPrefix(stringToHandle, "http://")
-	stringToHandle = strings.TrimPrefix(stringToHandle, "www.")
+func NormalizeString(stringToNormalize string) (string, error) {
+	stringToHandle := strings.ToLower(stringToNormalize)
+	if regex, err := regexp.Compile(`^(https?:\/\/)?(www\.)?([\w\-]+\.\w{1,3}\/?(.*))$`); err == nil {
+		matches := regex.FindStringSubmatch(stringToHandle)
+		if len(matches) == 0 {
+			return "", errors.New("invalid URL")
+		}
+
+		stringToHandle = matches[3]
+	}
 
 	normalizedString := ""
 
@@ -18,5 +27,5 @@ func NormalizeString(stringToNormalize string) string {
 		}
 	}
 
-	return strings.Trim(normalizedString, "-")
+	return strings.Trim(normalizedString, "-"), nil
 }
