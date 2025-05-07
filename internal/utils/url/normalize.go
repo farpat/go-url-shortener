@@ -6,9 +6,9 @@ import (
 	"strings"
 )
 
-// NormalizeString normalise une chaîne de caractères pour être utilisée dans une URL
-func NormalizeString(stringToNormalize string) (string, error) {
-	stringToHandle := strings.ToLower(stringToNormalize)
+// NormalizeURL normalizes a URL to be used in a slug
+func NormalizeURL(urlToNormalize string) (string, error) {
+	stringToHandle := strings.ToLower(urlToNormalize)
 	if regex, err := regexp.Compile(`^(https?:\/\/)?(www\.)?([\w\-]+\.\w{1,3}\/?(.*))$`); err == nil {
 		matches := regex.FindStringSubmatch(stringToHandle)
 		if len(matches) == 0 {

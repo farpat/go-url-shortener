@@ -20,7 +20,7 @@ func TestNormalizeGoodString(t *testing.T) {
 
 	// ACT
 	for stringToNormalize, expected := range stringToNormalizes {
-		result, err := url.NormalizeString(stringToNormalize)
+		result, err := url.NormalizeURL(stringToNormalize)
 
 		// ASSERT
 		assert.Equal(t, expected, result)
@@ -33,7 +33,7 @@ func TestNormalizeBadString(t *testing.T) {
 	invalidURL := "https://"
 
 	// ACT
-	result, err := url.NormalizeString(invalidURL)
+	result, err := url.NormalizeURL(invalidURL)
 
 	// ASSERT
 	assert.Equal(t, "", result)
