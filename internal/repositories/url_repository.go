@@ -8,7 +8,7 @@ import (
 	"github.com/farpat/go-url-shortener/internal/models"
 	"github.com/farpat/go-url-shortener/internal/services"
 	"github.com/farpat/go-url-shortener/internal/utils"
-	_ "github.com/mattn/go-sqlite3" // pour le driver SQLite
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type NotFoundError struct {

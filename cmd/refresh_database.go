@@ -8,7 +8,7 @@ import (
 	"github.com/farpat/go-url-shortener/internal/models"
 	"github.com/farpat/go-url-shortener/internal/services"
 	"github.com/fatih/color"
-	_ "github.com/mattn/go-sqlite3" // pour le driver SQLite
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
