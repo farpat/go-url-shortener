@@ -8,7 +8,7 @@ import (
 	"github.com/farpat/go-url-shortener/internal/config"
 	"github.com/farpat/go-url-shortener/internal/models"
 	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
-	"github.com/farpat/go-url-shortener/internal/utils"
+	"github.com/farpat/go-url-shortener/internal/utils/framework"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
 )
@@ -16,7 +16,7 @@ import (
 func setupTestDB() (teardown func(), db *sql.DB) {
 	dbPath := "database_test.db"
 	config.Databases["main"] = dbPath
-	absoluteDbPath := utils.ProjectPath(dbPath)
+	absoluteDbPath := framework.ProjectPath(dbPath)
 
 	db, err := sql.Open("sqlite3", absoluteDbPath)
 	if err != nil {

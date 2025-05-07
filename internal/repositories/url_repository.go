@@ -7,7 +7,7 @@ import (
 	"github.com/farpat/go-url-shortener/internal/config"
 	"github.com/farpat/go-url-shortener/internal/models"
 	"github.com/farpat/go-url-shortener/internal/services"
-	"github.com/farpat/go-url-shortener/internal/utils"
+	"github.com/farpat/go-url-shortener/internal/utils/framework"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -106,7 +106,7 @@ func Create(url models.UrlShowItem) error {
 func openDB() (*sql.DB, error) {
 	dbPath := config.Databases["main"]
 
-	db, err := sql.Open("sqlite3", utils.ProjectPath(dbPath))
+	db, err := sql.Open("sqlite3", framework.ProjectPath(dbPath))
 	if err != nil {
 		return nil, err
 	}

@@ -11,18 +11,17 @@ This is the structure of the project:
 │       ├── {command-path-1}/main.go
 │       ├── {command-path-2}/main.go
 │       └── ...
-
 ├── internal
 │   ├── config                        => Configuration files
 │   ├── handlers                      => Handlers for API endpoints
 │   ├── models                        => Database models
 │   ├── repositories                  => Database repositories
 │   ├── services                      => Business logic
-│   ├── validation                    => Contains custom validation rules
-│   └── utils                         => Utility functions
+│   ├── utils                         => Utility functions
+│   └── validation                    => Contains custom validation rules
 ├── tests
 │   ├── unit                          => Unit tests
-│   └── feature                       => Tests of endpoints or commands
+│   └── feature                       => Tests of endpoints or commands (cmd/tools)
 ├── .air.toml                         => Auto-reload configuration
 └── Makefile                          => Developer commands
 ```

@@ -5,17 +5,26 @@ import (
 	"net/http"
 
 	"github.com/farpat/go-url-shortener/internal/config"
+	oauthHandler "github.com/farpat/go-url-shortener/internal/handlers/oauth"
 	urlHandler "github.com/farpat/go-url-shortener/internal/handlers/url"
-	"github.com/farpat/go-url-shortener/internal/utils"
+	"github.com/farpat/go-url-shortener/internal/utils/framework"
 	"github.com/gorilla/mux"
 )
 
 func main() {
 	router := mux.NewRouter()
-	router.HandleFunc("/api/urls", urlHandler.Index).Methods("GET")
-	router.HandleFunc("/api/urls/{slug:[a-z0-9]+}", urlHandler.Show).Methods("GET")
-	router.HandleFunc("/api/urls/{slug:[a-z0-9]+}", urlHandler.Destroy).Methods("DELETE")
-	router.HandleFunc("/api/urls", urlHandler.Store).Methods("POST")
+
+	// API routes
+	apiRouter := router.PathPrefix("/api").Subrouter()
+	// apiRouter.Use(oauthHandler.JWTAuthMiddleware)
+	apiRouter.HandleFunc("/urls", urlHandler.Index).Methods("GET")
+	apiRouter.HandleFunc("/urls/{slug}", urlHandler.Show).Methods("GET")
+	apiRouter.HandleFunc("/urls/{slug}", urlHandler.Destroy).Methods("DELETE")
+	apiRouter.HandleFunc("/urls", urlHandler.Store).Methods("POST")
+
+	// OAuth routes
+	oauthRouter := router.PathPrefix("/oauth").Subrouter()
+	oauthRouter.HandleFunc("/login", oauthHandler.Login).Methods("POST")
 
 	server := &http.Server{
 		Addr:    ":" + config.App["port"],
@@ -23,7 +32,7 @@ func main() {
 	}
 
 	log.Fatal(server.ListenAndServeTLS(
-		utils.ProjectPath("certs/cert.pem"),
-		utils.ProjectPath("certs/key.pem"),
+		framework.ProjectPath("certs/cert.pem"),
+		framework.ProjectPath("certs/key.pem"),
 	))
 }

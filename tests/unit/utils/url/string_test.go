@@ -1,9 +1,9 @@
-package utils
+package url_test
 
 import (
 	"testing"
 
-	"github.com/farpat/go-url-shortener/internal/utils"
+	"github.com/farpat/go-url-shortener/internal/utils/url"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +20,7 @@ func TestNormalizeGoodString(t *testing.T) {
 
 	// ACT
 	for stringToNormalize, expected := range stringToNormalizes {
-		result, err := utils.NormalizeString(stringToNormalize)
+		result, err := url.NormalizeString(stringToNormalize)
 
 		// ASSERT
 		assert.Equal(t, expected, result)
@@ -30,10 +30,10 @@ func TestNormalizeGoodString(t *testing.T) {
 
 func TestNormalizeBadString(t *testing.T) {
 	// ARRANGE
-	stringToNormalize := "bad_url"
+	invalidURL := "https://"
 
 	// ACT
-	result, err := utils.NormalizeString(stringToNormalize)
+	result, err := url.NormalizeString(invalidURL)
 
 	// ASSERT
 	assert.Equal(t, "", result)

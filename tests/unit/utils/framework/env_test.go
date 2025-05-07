@@ -1,11 +1,11 @@
-package utils
+package framework_test
 
 import (
 	"os"
 	"strings"
 	"testing"
 
-	"github.com/farpat/go-url-shortener/internal/utils"
+	"github.com/farpat/go-url-shortener/internal/utils/framework"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,7 +15,7 @@ func TestDefaultValue(t *testing.T) {
 	defaultValue := "default"
 
 	// ACT
-	result := utils.Env(key, defaultValue)
+	result := framework.Env(key, defaultValue)
 
 	// ASSERT
 	assert.Equal(t, defaultValue, result)
@@ -25,10 +25,11 @@ func TestValue(t *testing.T) {
 	key, value := extractFirstEnvVariable()
 
 	// ACT
-	result := utils.Env(key, "not used")
+	result := framework.Env(key, "not used")
 
 	// ASSERT
 	assert.Equal(t, value, result)
+	assert.NotEqual(t, "not used", result)
 }
 
 func extractFirstEnvVariable() (key string, value string) {
