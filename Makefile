@@ -18,7 +18,7 @@ test: ## Run tests
 	@go test ./tests/... $(if $(FILTER),-run $(FILTER))
 
 run: ## Run the application
-	@echo "Server started on $(BOLD)https://localhost:$(PORT)$(RESET)"
+	@echo "🚀  Server starting on https://localhost:$(PORT)$(RESET)"
 	@PORT=$(PORT) air -log.silent=true
 
 update-certificates: ## Generate SSL certificates
