@@ -71,6 +71,31 @@ func TestAll(t *testing.T) {
 	}
 }
 
+func TestExistsReturnTrue(t *testing.T) {
+	// ARRANGE
+	teardown, db := setupTestDB()
+	defer teardown()
+
+	// ACT
+	url := models.UrlShowItem{Slug: "abc", Url: "https://example.com"}
+	insertUrl(db, url)
+	exists, _ := urlRepository.Exists(url.Slug)
+
+	// ASSERT
+	assert.True(t, exists)
+}
+
+func TestExistsReturnFalse(t *testing.T) {
+	// ARRANGE
+	setupTestDB()
+
+	// ACT
+	exists, _ := urlRepository.Exists("not-found")
+
+	// ASSERT
+	assert.False(t, exists)
+}
+
 func TestFind(t *testing.T) {
 	// ARRANGE
 	teardown, db := setupTestDB()

@@ -44,6 +44,18 @@ func All() ([]models.UrlListItem, error) {
 	return urls, nil
 }
 
+func Exists(slug string) (bool, error) {
+	db, err := openDB()
+	if err != nil {
+		return false, err
+	}
+	defer db.Close()
+
+	var count int
+	db.QueryRow("SELECT COUNT(*) FROM urls WHERE slug = ?", slug).Scan(&count)
+	return count > 0, nil
+}
+
 func Find(slug string) (models.UrlShowItem, error) {
 	db, err := openDB()
 	if err != nil {

@@ -1,8 +1,6 @@
 package validation
 
 import (
-	"errors"
-
 	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
 	"github.com/go-playground/validator/v10"
 )
@@ -13,11 +11,11 @@ func init() {
 	validate = validator.New()
 
 	validate.RegisterValidation("unique_slug", func(fl validator.FieldLevel) bool {
-		_, err := urlRepository.Find(fl.Field().String())
-		var notFoundError *urlRepository.NotFoundError
-
-		// error is "NotFoundError" => slug does not exist => good
-		return errors.As(err, &notFoundError)
+		exists, err := urlRepository.Exists(fl.Field().String())
+		if err != nil {
+			panic(err)
+		}
+		return !exists
 	})
 }
 
