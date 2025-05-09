@@ -15,11 +15,18 @@ type NotFoundError struct {
 	Slug string
 }
 
+type UrlRepository struct {
+}
+
+func NewUrlRepository() *UrlRepository {
+	return &UrlRepository{}
+}
+
 func (e *NotFoundError) Error() string {
 	return "URL linked to '" + e.Slug + "' not found"
 }
 
-func All() ([]models.UrlListItem, error) {
+func (r *UrlRepository) All() ([]models.UrlListItem, error) {
 	db, err := openDB()
 	if err != nil {
 		return nil, err
@@ -44,7 +51,7 @@ func All() ([]models.UrlListItem, error) {
 	return urls, nil
 }
 
-func Exists(slug string) (bool, error) {
+func (r *UrlRepository) Exists(slug string) (bool, error) {
 	db, err := openDB()
 	if err != nil {
 		return false, err
@@ -56,7 +63,7 @@ func Exists(slug string) (bool, error) {
 	return count > 0, nil
 }
 
-func Find(slug string) (models.UrlShowItem, error) {
+func (r *UrlRepository) Find(slug string) (models.UrlShowItem, error) {
 	db, err := openDB()
 	if err != nil {
 		return models.UrlShowItem{}, err
@@ -72,7 +79,7 @@ func Find(slug string) (models.UrlShowItem, error) {
 	return url, nil
 }
 
-func Delete(slug string) error {
+func (r *UrlRepository) Delete(slug string) error {
 	db, err := openDB()
 	if err != nil {
 		return err
@@ -92,7 +99,7 @@ func Delete(slug string) error {
 	return nil
 }
 
-func Create(url models.UrlShowItem) error {
+func (r *UrlRepository) Create(url models.UrlShowItem) error {
 	db, err := openDB()
 	if err != nil {
 		return err

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/farpat/go-url-shortener/internal/models"
-	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
+	"github.com/farpat/go-url-shortener/internal/repositories"
 	"github.com/farpat/go-url-shortener/tests"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
@@ -31,7 +31,7 @@ func TestAll(t *testing.T) {
 	for _, url := range urls {
 		insertUrl(db, url)
 	}
-	allUrls, _ := urlRepository.All()
+	allUrls, _ := repositories.NewUrlRepository().All()
 
 	// ASSERT
 	assert.Equal(t, 2, len(allUrls))
@@ -51,7 +51,7 @@ func TestExistsReturnTrue(t *testing.T) {
 	// ACT
 	url := models.UrlShowItem{Slug: "abc", Url: "https://example.com"}
 	insertUrl(db, url)
-	exists, _ := urlRepository.Exists(url.Slug)
+	exists, _ := repositories.NewUrlRepository().Exists(url.Slug)
 
 	// ASSERT
 	assert.True(t, exists)
@@ -63,7 +63,7 @@ func TestExistsReturnFalse(t *testing.T) {
 	defer teardown()
 
 	// ACT
-	exists, _ := urlRepository.Exists("not-found")
+	exists, _ := repositories.NewUrlRepository().Exists("not-found")
 
 	// ASSERT
 	assert.False(t, exists)
@@ -77,7 +77,7 @@ func TestFind(t *testing.T) {
 	// ACT
 	url := models.UrlShowItem{Slug: "abc", Url: "https://example.com"}
 	insertUrl(db, url)
-	foundUrl, _ := urlRepository.Find(url.Slug)
+	foundUrl, _ := repositories.NewUrlRepository().Find(url.Slug)
 
 	// ASSERT
 	assert.Equal(t, url.Slug, foundUrl.Slug)
@@ -93,10 +93,10 @@ func TestFindNotFound(t *testing.T) {
 	db.QueryRow("SELECT COUNT(*) FROM urls").Scan(&oldUrlCounts)
 
 	// ACT
-	_, err := urlRepository.Find("not-found")
+	_, err := repositories.NewUrlRepository().Find("not-found")
 
 	// ASSERT
-	expectedError := urlRepository.NotFoundError{Slug: "not-found"}
+	expectedError := repositories.NotFoundError{Slug: "not-found"}
 	assert.EqualError(t, err, expectedError.Error())
 	var newUrlCounts int
 	db.QueryRow("SELECT COUNT(*) FROM urls").Scan(&newUrlCounts)
@@ -111,7 +111,7 @@ func TestDelete(t *testing.T) {
 	// ACT
 	url := models.UrlShowItem{Slug: "abc", Url: "https://example.com"}
 	insertUrl(db, url)
-	err := urlRepository.Delete(url.Slug)
+	err := repositories.NewUrlRepository().Delete(url.Slug)
 
 	// ASSERT
 	assert.NoError(t, err)
@@ -126,10 +126,10 @@ func TestDeleteNotFound(t *testing.T) {
 	// ACT
 	url := models.UrlShowItem{Slug: "abc", Url: "https://example.com"}
 	insertUrl(db, url)
-	err := urlRepository.Delete("not-found")
+	err := repositories.NewUrlRepository().Delete("not-found")
 
 	// ASSERT
-	expectedError := urlRepository.NotFoundError{Slug: "not-found"}
+	expectedError := repositories.NotFoundError{Slug: "not-found"}
 	assert.EqualError(t, err, expectedError.Error())
 	assert.Equal(t, 1, getUrlsCount(db))
 }
@@ -141,7 +141,7 @@ func TestCreateWithoutSlug(t *testing.T) {
 
 	// ACT
 	url := models.UrlShowItem{Url: "https://example.com"}
-	err := urlRepository.Create(url)
+	err := repositories.NewUrlRepository().Create(url)
 
 	// ASSERT
 	expectedSlug := "b1d785a29f52a5e94b3c009bc11b9cfa"
@@ -157,7 +157,7 @@ func TestCreateWithSlug(t *testing.T) {
 
 	// ACT
 	url := models.UrlShowItem{Slug: "abc", Url: "https://example.com"}
-	err := urlRepository.Create(url)
+	err := repositories.NewUrlRepository().Create(url)
 
 	// ASSERT
 	expectedSlug := "abc"

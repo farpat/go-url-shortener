@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/farpat/go-url-shortener/internal/models"
-	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
+	"github.com/farpat/go-url-shortener/internal/repositories"
 	"github.com/farpat/go-url-shortener/internal/requests"
 	"github.com/farpat/go-url-shortener/internal/services"
 	"github.com/farpat/go-url-shortener/internal/validation"
@@ -45,7 +45,7 @@ func Store(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	err := urlRepository.Create(models.UrlShowItem{
+	err := repositories.NewUrlRepository().Create(models.UrlShowItem{
 		Url:  urlRequest.Url,
 		Slug: urlRequest.Slug,
 	})
@@ -59,7 +59,7 @@ func Store(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	url, _ := urlRepository.Find(urlRequest.Slug)
+	url, _ := repositories.NewUrlRepository().Find(urlRequest.Slug)
 
 	json.NewEncoder(response).Encode(StoreResponse{
 		Data: url,

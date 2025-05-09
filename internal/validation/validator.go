@@ -1,7 +1,7 @@
 package validation
 
 import (
-	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
+	"github.com/farpat/go-url-shortener/internal/repositories"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -11,7 +11,7 @@ func init() {
 	validate = validator.New()
 
 	validate.RegisterValidation("unique_slug", func(fl validator.FieldLevel) bool {
-		exists, err := urlRepository.Exists(fl.Field().String())
+		exists, err := repositories.NewUrlRepository().Exists(fl.Field().String())
 		if err != nil {
 			panic(err)
 		}

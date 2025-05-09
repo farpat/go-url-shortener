@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
+	"github.com/farpat/go-url-shortener/internal/repositories"
 	"github.com/gorilla/mux"
 )
 
@@ -13,10 +13,10 @@ func Destroy(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "application/json")
 
 	slug := mux.Vars(request)["slug"]
-	err := urlRepository.Delete(slug)
+	err := repositories.NewUrlRepository().Delete(slug)
 	if err != nil {
 		var errorJSON map[string]string
-		var notFoundError *urlRepository.NotFoundError
+		var notFoundError *repositories.NotFoundError
 
 		if errors.As(err, &notFoundError) {
 			response.WriteHeader(http.StatusNotFound)

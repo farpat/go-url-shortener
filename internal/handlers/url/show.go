@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/farpat/go-url-shortener/internal/models"
-	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
+	"github.com/farpat/go-url-shortener/internal/repositories"
 	"github.com/gorilla/mux"
 )
 
@@ -19,10 +19,10 @@ func Show(response http.ResponseWriter, request *http.Request) {
 
 	vars := mux.Vars(request)
 	slug := vars["slug"]
-	url, err := urlRepository.Find(slug)
+	url, err := repositories.NewUrlRepository().Find(slug)
 	if err != nil {
 		var jsonError map[string]string
-		var notFoundError *urlRepository.NotFoundError
+		var notFoundError *repositories.NotFoundError
 
 		if errors.As(err, &notFoundError) {
 			response.WriteHeader(http.StatusNotFound)

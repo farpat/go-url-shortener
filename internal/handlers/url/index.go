@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/farpat/go-url-shortener/internal/models"
-	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
+	"github.com/farpat/go-url-shortener/internal/repositories"
 )
 
 type IndexResponse struct {
@@ -15,7 +15,7 @@ type IndexResponse struct {
 func Index(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "application/json")
 
-	urls, err := urlRepository.All()
+	urls, err := repositories.NewUrlRepository().All()
 	if err != nil {
 		response.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(response).Encode(map[string]string{
