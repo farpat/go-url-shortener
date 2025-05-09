@@ -40,7 +40,7 @@ func Store(response http.ResponseWriter, request *http.Request) {
 
 	slug := services.GenerateSlug(urlRequest.Url)
 	urlRequest.Slug = slug
-	if err := validation.GetValidator().Struct(urlRequest); err != nil {
+	if err := validation.GetValidate().Struct(urlRequest); err != nil {
 		response.WriteHeader(http.StatusUnprocessableEntity)
 		json.NewEncoder(response).Encode(StoreErrorResponse{
 			Error:    "Invalid data",
