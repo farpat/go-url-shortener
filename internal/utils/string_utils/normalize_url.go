@@ -1,4 +1,4 @@
-package url
+package string_utils
 
 import (
 	"errors"
