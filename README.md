@@ -8,8 +8,7 @@ This is the structure of the project:
 │   ├── server
 │   │   └── main.go                   => Main application
 │   └── tools                         => Folder containing command line tools
-│       ├── {command-path-1}/main.go
-│       ├── {command-path-2}/main.go
+│       ├── {command}/main.go
 │       └── ...
 ├── internal
 │   ├── config                        => Configuration files
@@ -19,6 +18,8 @@ This is the structure of the project:
 │   ├── services                      => Business logic
 │   ├── utils                         => Utility functions
 │   └── validation                    => Contains custom validation rules
+│       ├── main.go                   => Validation rules
+│       └── rule-{rule-name}.go       => Custom validation rule
 ├── tests
 │   ├── unit                          => Unit tests
 │   └── feature                       => Tests of endpoints or commands (cmd/tools)
