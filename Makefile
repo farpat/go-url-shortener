@@ -15,7 +15,7 @@ help: ## Show this help message
 	@awk 'BEGIN {FS = ":.*##"; } /^[a-zA-Z_-]+:.*?##/ { printf "$(BOLD)$(BLUE)%-7s$(RESET) %s\n", $$1, $$2 }' $(MAKEFILE_LIST) | sort
 
 test: ## Run tests
-	@go test ./tests/... $(if $(FILTER),-run $(FILTER))
+	@go test ./tests/unit/... $(if $(FILTER),-run $(FILTER))
 
 run: ## Run the application
 	@echo "🚀  Server starting on https://localhost:$(PORT)$(RESET)"

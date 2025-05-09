@@ -2,42 +2,14 @@ package repositories
 
 import (
 	"database/sql"
-	"os"
 	"testing"
 
-	"github.com/farpat/go-url-shortener/internal/config"
 	"github.com/farpat/go-url-shortener/internal/models"
 	urlRepository "github.com/farpat/go-url-shortener/internal/repositories"
-	"github.com/farpat/go-url-shortener/internal/utils/framework"
+	"github.com/farpat/go-url-shortener/tests"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
 )
-
-func setupTestDB() (teardown func(), db *sql.DB) {
-	dbPath := "database_test.db"
-	config.Databases["main"] = dbPath
-	absoluteDbPath := framework.ProjectPath(dbPath)
-
-	db, err := sql.Open("sqlite3", absoluteDbPath)
-	if err != nil {
-		panic(err)
-	}
-
-	// Crée la table
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS urls (
-		slug TEXT PRIMARY KEY,
-		url TEXT NOT NULL,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-	)`)
-	if err != nil {
-		panic(err)
-	}
-
-	return func() {
-		db.Close()
-		os.Remove(absoluteDbPath)
-	}, db
-}
 
 func insertUrl(db *sql.DB, url models.UrlShowItem) {
 	_, err := db.Exec("INSERT INTO urls (slug, url) VALUES (?, ?)", url.Slug, url.Url)
@@ -48,7 +20,7 @@ func insertUrl(db *sql.DB, url models.UrlShowItem) {
 
 func TestAll(t *testing.T) {
 	// ARRANGE
-	teardown, db := setupTestDB()
+	teardown, db := tests.SetupTestDB()
 	defer teardown()
 
 	// ACT
@@ -73,7 +45,7 @@ func TestAll(t *testing.T) {
 
 func TestExistsReturnTrue(t *testing.T) {
 	// ARRANGE
-	teardown, db := setupTestDB()
+	teardown, db := tests.SetupTestDB()
 	defer teardown()
 
 	// ACT
@@ -87,7 +59,8 @@ func TestExistsReturnTrue(t *testing.T) {
 
 func TestExistsReturnFalse(t *testing.T) {
 	// ARRANGE
-	setupTestDB()
+	teardown, _ := tests.SetupTestDB()
+	defer teardown()
 
 	// ACT
 	exists, _ := urlRepository.Exists("not-found")
@@ -98,7 +71,7 @@ func TestExistsReturnFalse(t *testing.T) {
 
 func TestFind(t *testing.T) {
 	// ARRANGE
-	teardown, db := setupTestDB()
+	teardown, db := tests.SetupTestDB()
 	defer teardown()
 
 	// ACT
@@ -114,7 +87,7 @@ func TestFind(t *testing.T) {
 
 func TestFindNotFound(t *testing.T) {
 	// ARRANGE
-	teardown, db := setupTestDB()
+	teardown, db := tests.SetupTestDB()
 	defer teardown()
 	var oldUrlCounts int
 	db.QueryRow("SELECT COUNT(*) FROM urls").Scan(&oldUrlCounts)
@@ -132,7 +105,7 @@ func TestFindNotFound(t *testing.T) {
 
 func TestDelete(t *testing.T) {
 	// ARRANGE
-	teardown, db := setupTestDB()
+	teardown, db := tests.SetupTestDB()
 	defer teardown()
 
 	// ACT
@@ -147,7 +120,7 @@ func TestDelete(t *testing.T) {
 
 func TestDeleteNotFound(t *testing.T) {
 	// ARRANGE
-	teardown, db := setupTestDB()
+	teardown, db := tests.SetupTestDB()
 	defer teardown()
 
 	// ACT
@@ -163,7 +136,7 @@ func TestDeleteNotFound(t *testing.T) {
 
 func TestCreateWithoutSlug(t *testing.T) {
 	// ARRANGE
-	teardown, db := setupTestDB()
+	teardown, db := tests.SetupTestDB()
 	defer teardown()
 
 	// ACT
@@ -179,7 +152,7 @@ func TestCreateWithoutSlug(t *testing.T) {
 
 func TestCreateWithSlug(t *testing.T) {
 	// ARRANGE
-	teardown, db := setupTestDB()
+	teardown, db := tests.SetupTestDB()
 	defer teardown()
 
 	// ACT
