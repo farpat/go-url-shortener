@@ -1,9 +1,10 @@
 package string_utils
 
 import (
-	"errors"
 	"regexp"
 	"strings"
+
+	internalErrors "github.com/farpat/go-url-shortener/internal/errors"
 )
 
 func NormalizeURL(urlToNormalize string) (string, error) {
@@ -11,7 +12,7 @@ func NormalizeURL(urlToNormalize string) (string, error) {
 	if regex, err := regexp.Compile(`^(https?:\/\/)?(www\.)?([\w\-]+\.\w{1,3}\/?(.*))$`); err == nil {
 		matches := regex.FindStringSubmatch(stringToHandle)
 		if len(matches) == 0 {
-			return "", errors.New("URL invalide")
+			return "", &internalErrors.InvalidUrlError{Url: urlToNormalize}
 		}
 
 		stringToHandle = matches[3]

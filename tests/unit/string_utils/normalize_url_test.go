@@ -3,7 +3,7 @@ package string_utils_test
 import (
 	"testing"
 
-	"github.com/farpat/go-url-shortener/internal/utils/string_utils"
+	"github.com/farpat/go-url-shortener/internal/services/string_utils"
 	"github.com/stretchr/testify/assert"
 )
 

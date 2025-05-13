@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 
+	internalErrors "github.com/farpat/go-url-shortener/internal/errors"
 	"github.com/farpat/go-url-shortener/internal/repositories"
 	"github.com/gorilla/mux"
 )
@@ -16,7 +17,7 @@ func Destroy(response http.ResponseWriter, request *http.Request) {
 	err := repositories.NewUrlRepository().Delete(slug)
 	if err != nil {
 		var errorJSON map[string]string
-		var notFoundError *repositories.NotFoundError
+		var notFoundError *internalErrors.NotFoundError
 
 		if errors.As(err, &notFoundError) {
 			response.WriteHeader(http.StatusNotFound)

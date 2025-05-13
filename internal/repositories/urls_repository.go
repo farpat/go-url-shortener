@@ -5,25 +5,18 @@ import (
 	"time"
 
 	"github.com/farpat/go-url-shortener/internal/config"
+	internalErrors "github.com/farpat/go-url-shortener/internal/errors"
 	"github.com/farpat/go-url-shortener/internal/models"
-	"github.com/farpat/go-url-shortener/internal/services"
+	"github.com/farpat/go-url-shortener/internal/services/string_utils"
 	"github.com/farpat/go-url-shortener/internal/utils/framework"
 	_ "github.com/mattn/go-sqlite3"
 )
-
-type NotFoundError struct {
-	Slug string
-}
 
 type UrlRepository struct {
 }
 
 func NewUrlRepository() *UrlRepository {
 	return &UrlRepository{}
-}
-
-func (e *NotFoundError) Error() string {
-	return "URL linked to '" + e.Slug + "' not found"
 }
 
 func (r *UrlRepository) All() ([]models.UrlListItem, error) {
@@ -73,7 +66,7 @@ func (r *UrlRepository) Find(slug string) (models.UrlShowItem, error) {
 	var url models.UrlShowItem
 	err = db.QueryRow("SELECT slug, url, created_at FROM urls WHERE slug = ?", slug).Scan(&url.Slug, &url.Url, &url.CreatedAt)
 	if err != nil {
-		return models.UrlShowItem{}, &NotFoundError{Slug: slug}
+		return models.UrlShowItem{}, &internalErrors.NotFoundError{Slug: slug}
 	}
 
 	return url, nil
@@ -93,7 +86,7 @@ func (r *UrlRepository) Delete(slug string) error {
 
 	rowsAffectedCount, _ := result.RowsAffected()
 	if rowsAffectedCount == 0 {
-		return &NotFoundError{Slug: slug}
+		return &internalErrors.NotFoundError{Slug: slug}
 	}
 
 	return nil
@@ -107,7 +100,7 @@ func (r *UrlRepository) Create(url models.UrlShowItem) error {
 	defer db.Close()
 
 	if url.Slug == "" {
-		url.Slug = services.GenerateSlug(url.Url)
+		url.Slug = string_utils.GenerateSlug(url.Url)
 	}
 
 	if url.CreatedAt.IsZero() {

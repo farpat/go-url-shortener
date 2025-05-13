@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 
+	internalErrors "github.com/farpat/go-url-shortener/internal/errors"
 	"github.com/farpat/go-url-shortener/internal/models"
 	"github.com/farpat/go-url-shortener/internal/repositories"
 	"github.com/gorilla/mux"
@@ -22,7 +23,7 @@ func Show(response http.ResponseWriter, request *http.Request) {
 	url, err := repositories.NewUrlRepository().Find(slug)
 	if err != nil {
 		var jsonError map[string]string
-		var notFoundError *repositories.NotFoundError
+		var notFoundError *internalErrors.NotFoundError
 
 		if errors.As(err, &notFoundError) {
 			response.WriteHeader(http.StatusNotFound)

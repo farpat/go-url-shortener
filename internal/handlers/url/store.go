@@ -6,7 +6,7 @@ import (
 
 	"github.com/farpat/go-url-shortener/internal/models"
 	"github.com/farpat/go-url-shortener/internal/repositories"
-	"github.com/farpat/go-url-shortener/internal/services"
+	"github.com/farpat/go-url-shortener/internal/services/string_utils"
 	"github.com/farpat/go-url-shortener/internal/validation"
 	"github.com/go-playground/validator/v10"
 )
@@ -38,7 +38,7 @@ func Store(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	slug := services.GenerateSlug(urlRequest.Url)
+	slug := string_utils.GenerateSlug(urlRequest.Url)
 	urlRequest.Slug = slug
 	if err := validation.GetValidate().Struct(urlRequest); err != nil {
 		response.WriteHeader(http.StatusUnprocessableEntity)

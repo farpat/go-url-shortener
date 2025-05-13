@@ -1,9 +1,10 @@
-package repositories
+package repositories_test
 
 import (
 	"database/sql"
 	"testing"
 
+	internalErrors "github.com/farpat/go-url-shortener/internal/errors"
 	"github.com/farpat/go-url-shortener/internal/models"
 	"github.com/farpat/go-url-shortener/internal/repositories"
 	"github.com/farpat/go-url-shortener/tests"
@@ -96,7 +97,7 @@ func TestFindNotFound(t *testing.T) {
 	_, err := repositories.NewUrlRepository().Find("not-found")
 
 	// ASSERT
-	expectedError := repositories.NotFoundError{Slug: "not-found"}
+	expectedError := internalErrors.NotFoundError{Slug: "not-found"}
 	assert.EqualError(t, err, expectedError.Error())
 	var newUrlCounts int
 	db.QueryRow("SELECT COUNT(*) FROM urls").Scan(&newUrlCounts)
@@ -129,7 +130,7 @@ func TestDeleteNotFound(t *testing.T) {
 	err := repositories.NewUrlRepository().Delete("not-found")
 
 	// ASSERT
-	expectedError := repositories.NotFoundError{Slug: "not-found"}
+	expectedError := internalErrors.NotFoundError{Slug: "not-found"}
 	assert.EqualError(t, err, expectedError.Error())
 	assert.Equal(t, 1, getUrlsCount(db))
 }
