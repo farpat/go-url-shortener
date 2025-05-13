@@ -6,6 +6,7 @@ import (
 
 	"github.com/farpat/go-url-shortener/internal/config"
 	"github.com/farpat/go-url-shortener/internal/models"
+	"github.com/farpat/go-url-shortener/internal/utils/framework"
 	"github.com/fatih/color"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/spf13/cobra"
@@ -78,15 +79,14 @@ func storeUrl(db *sql.DB, url models.UrlShowItem) error {
 }
 
 func createUrlsTable(db *sql.DB) error {
-	_, err := db.Exec(`
-		CREATE TABLE IF NOT EXISTS urls (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			slug TEXT NOT NULL UNIQUE,
-			url TEXT NOT NULL,
-			created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-		)
-	`)
-	return err
+	return framework.CreateTable(db, framework.DatabaseTable{
+		Name: "urls",
+		Fields: []framework.DatabaseField{
+			{Name: "slug", Type: "TEXT", Extra: "PRIMARY KEY"},
+			{Name: "url", Type: "TEXT", Extra: "NOT NULL"},
+			{Name: "created_at", Type: "TIMESTAMP", Extra: "DEFAULT CURRENT_TIMESTAMP"},
+		},
+	})
 }
 
 func deleteDatabaseIfExists(dbPath string) error {
