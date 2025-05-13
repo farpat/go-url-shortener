@@ -7,6 +7,7 @@ import (
 
 const projectName = "go-url-shortener"
 
+// ProjectPath returns the absolute path of the project root directory.
 func ProjectPath(relativePath string) string {
 	currentPath, _ := os.Getwd()
 	suffixPosition := strings.LastIndex(currentPath, projectName)

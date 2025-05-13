@@ -7,7 +7,7 @@ import (
 	jwtlib "github.com/golang-jwt/jwt/v5"
 )
 
-// GenerateToken crée un nouveau token JWT valide pour 5 minutes
+// GenerateToken generates a new JWT token valid for 5 minutes
 func GenerateToken() (string, error) {
 	token := jwtlib.NewWithClaims(jwtlib.SigningMethodHS256, jwtlib.MapClaims{
 		"iss": "go-url-shortener",
