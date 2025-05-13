@@ -33,6 +33,11 @@ This is the structure of the project:
 > [!NOTE]  
 > Note that [Urls.postman_collection.json](Urls.postman_collection.json) contains all exported endpoints from Postman.
 
+## Login
+```sh
+POST /oauth/login
+```
+
 ## List all short URLs
 ```sh
 GET /api/urls
