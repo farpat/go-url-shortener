@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/farpat/go-url-shortener/internal/config"
-	oauthHandler "github.com/farpat/go-url-shortener/internal/handlers/oauth"
-	urlHandler "github.com/farpat/go-url-shortener/internal/handlers/url"
+	oauthHandlers "github.com/farpat/go-url-shortener/internal/handlers/oauth"
+	urlHandlers "github.com/farpat/go-url-shortener/internal/handlers/url"
 	"github.com/farpat/go-url-shortener/internal/middlewares"
 	"github.com/farpat/go-url-shortener/internal/utils/framework"
 	"github.com/gorilla/mux"
@@ -18,14 +18,14 @@ func main() {
 	// API routes
 	apiRouter := router.PathPrefix("/api").Subrouter()
 	apiRouter.Use(middlewares.Authenticate)
-	apiRouter.HandleFunc("/urls", urlHandler.Index).Methods("GET")
-	apiRouter.HandleFunc("/urls/{slug}", urlHandler.Show).Methods("GET")
-	apiRouter.HandleFunc("/urls/{slug}", urlHandler.Destroy).Methods("DELETE")
-	apiRouter.HandleFunc("/urls", urlHandler.Store).Methods("POST")
+	apiRouter.HandleFunc("/urls", urlHandlers.Index).Methods("GET")
+	apiRouter.HandleFunc("/urls/{slug}", urlHandlers.Show).Methods("GET")
+	apiRouter.HandleFunc("/urls/{slug}", urlHandlers.Destroy).Methods("DELETE")
+	apiRouter.HandleFunc("/urls", urlHandlers.Store).Methods("POST")
 
 	// OAuth routes
 	oauthRouter := router.PathPrefix("/oauth").Subrouter()
-	oauthRouter.HandleFunc("/login", oauthHandler.Login).Methods("POST")
+	oauthRouter.HandleFunc("/login", oauthHandlers.Login).Methods("POST")
 
 	server := &http.Server{
 		Addr:    ":" + config.App["port"],
