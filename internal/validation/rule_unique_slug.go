@@ -5,7 +5,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func ValidateUniqueSlug(fl validator.FieldLevel) bool {
+func validateUniqueSlug(fl validator.FieldLevel) bool {
 	exists, err := repositories.NewUrlRepository().Exists(fl.Field().String())
 	if err != nil {
 		panic(err)

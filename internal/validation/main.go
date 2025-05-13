@@ -9,7 +9,7 @@ var validate *validator.Validate
 func init() {
 	validate = validator.New()
 
-	validate.RegisterValidation("unique_slug", ValidateUniqueSlug)
+	validate.RegisterValidation("unique_slug", validateUniqueSlug)
 }
 
 func FormatErrors(errs validator.ValidationErrors) map[string]string {
