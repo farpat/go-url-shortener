@@ -8,11 +8,10 @@ import (
 	"testing"
 
 	urlHandler "github.com/farpat/go-url-shortener/internal/handlers/url"
-	"github.com/farpat/go-url-shortener/internal/middlewares"
 	"github.com/farpat/go-url-shortener/internal/models"
+	"github.com/farpat/go-url-shortener/internal/router"
 	"github.com/farpat/go-url-shortener/internal/utils/jwt"
 	"github.com/farpat/go-url-shortener/tests"
-	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +19,7 @@ const indexUrl = "/api/urls"
 
 func TestIndexIsUnauthorizedIfInvalidToken(t *testing.T) {
 	// ARRANGE
-	router := makeRouter()
+	router := router.SetupRouter()
 
 	// ACT
 	request := httptest.NewRequest(http.MethodGet, indexUrl, nil)
@@ -34,7 +33,7 @@ func TestIndexIsUnauthorizedIfInvalidToken(t *testing.T) {
 
 func TestIndexListUrls(t *testing.T) {
 	// ARRANGE
-	router := makeRouter()
+	router := router.SetupRouter()
 	teardown, db := tests.SetupTestDB()
 	defer teardown()
 	for _, url := range []models.UrlListItem{
@@ -66,11 +65,4 @@ func insertUrl(db *sql.DB, url models.UrlListItem) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func makeRouter() *mux.Router {
-	router := mux.NewRouter()
-	router.HandleFunc(indexUrl, urlHandler.Index).Methods("GET")
-	router.Use(middlewares.Authenticate)
-	return router
 }
