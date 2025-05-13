@@ -3,12 +3,14 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/farpat/go-url-shortener/internal/utils/jwt"
 )
 
 type LoginResponse struct {
 	AccessToken string `json:"access_token"`
+	ExpiredAt   string `json:"expired_at"`
 }
 
 func Login(response http.ResponseWriter, request *http.Request) {
@@ -27,5 +29,6 @@ func Login(response http.ResponseWriter, request *http.Request) {
 	response.WriteHeader(http.StatusOK)
 	json.NewEncoder(response).Encode(LoginResponse{
 		AccessToken: tokenString,
+		ExpiredAt:   time.Now().Add(time.Minute * 5).Format("2006-01-02 15:04:05"),
 	})
 }
