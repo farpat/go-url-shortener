@@ -64,7 +64,7 @@ func Store(response http.ResponseWriter, request *http.Request) {
 	}
 
 	url, _ := repositories.NewUrlRepository().Find(urlRequest.Slug)
-
+	response.WriteHeader(http.StatusCreated)
 	json.NewEncoder(response).Encode(StoreResponse{
 		Data: url,
 	})
