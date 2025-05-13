@@ -19,7 +19,6 @@ func SetupTestDB() (teardown func(), db *sql.DB) {
 		panic(err)
 	}
 
-	// Crée la table
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS urls (
 		slug TEXT PRIMARY KEY,
 		url TEXT NOT NULL,
