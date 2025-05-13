@@ -14,6 +14,7 @@ This is the structure of the project:
 │   ├── config                    => Configuration files
 │   ├── errors                    => Custom errors
 │   ├── handlers                  => Handlers for API endpoints
+│   ├── middlewares               => HTTP Middlewares
 │   ├── models                    => Database models
 │   ├── repositories              => Database repositories
 │   ├── services                  => Business logic
